@@ -107,7 +107,7 @@ export default function UserRegistrationModal({
     setMessage("");
 
     try {
-      const res = await fetch('/api/register', {
+      const res = await fetch('/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

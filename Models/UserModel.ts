@@ -4,13 +4,25 @@ export interface IUser extends Document {
   walletAddress: string;
   name: string;
   createdAt: Date;
+
+  // 🔥 Photon fields
+  photonUserId?: string;
+  photonAccessToken?: string;
+  photonRefreshToken?: string;
 }
 
 const UserSchema: Schema<IUser> = new Schema({
   walletAddress: { type: String, required: true, unique: true },
   name: { type: String, required: true },
+
+  // 🔥 Added Photon fields
+  photonUserId: { type: String },
+  photonAccessToken: { type: String },
+  photonRefreshToken: { type: String },
+
   createdAt: { type: Date, default: Date.now },
 });
 
-// Avoid recompiling model
-export const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+// Avoid recompile
+export const User: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

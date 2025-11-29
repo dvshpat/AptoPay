@@ -23,7 +23,7 @@ export default function UserRegistory({ onRegistrationComplete }: UserRegistoryP
     setMessage("");
 
     try {
-      const res = await fetch("/api/register", {
+      const res = await fetch("/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ walletAddress: account?.address, name }),

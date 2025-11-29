@@ -1,10 +1,35 @@
 'use client'
 
+import { useEffect } from 'react';
 import UserRegistory from '@/components/UserRegistory';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
 
 export default function Page() {
-  const { connected } = useWallet();
+  const { account, connected } = useWallet();
+
+  useEffect(() => {
+    if (!connected || !account?.address) return;
+
+    const onboardToPhoton = async () => {
+      try {
+        const res = await fetch("/api/users/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            walletAddress: account.address
+          }),
+        });
+
+        const data = await res.json();
+        console.log("PHOTON REGISTER RESULT:", data);
+
+      } catch (err) {
+        console.error("Photon onboarding failed:", err);
+      }
+    };
+
+    onboardToPhoton();
+  }, [connected, account?.address]);
 
   if (!connected) {
     return (
