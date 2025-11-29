@@ -4,18 +4,22 @@ import { useState, useEffect, useRef } from 'react';
 import ReceivePayments from '@/components/ReceivePayments';
 import ReceiveSidebar from '@/components/ReceiveSidebar';
 import UserRegistrationModal from "@/components/UserRegistrationModal";
+import {
+  useWallet,
+} from "@aptos-labs/wallet-adapter-react";
+// import GetQR from '@/components/GetQR';
 import GetQR from '../GetQr';
-import { useWallet } from '@aptos-labs/wallet-adapter-react';
 
 export default function ReceivePage() {
-  const { account, connected } = useWallet();
-  const [activeTab, setActiveTab] = useState<"claim">("claim");
+  const { account, isLoading, connected, connect, disconnect } =
+    useWallet();
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [checkingUser, setCheckingUser] = useState(false);
   const [hasCheckedUser, setHasCheckedUser] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 5;
+  console.log("Wallet Info:", account?.address?.toString(), connected);
 
   const fetchCurrentUser = async (isRetry = false) => {
     if (!account?.address || !connected || hasCheckedUser) return;
@@ -26,12 +30,13 @@ export default function ReceivePage() {
     }
     
     try {
-      console.log('Fetching current user (receive page)...', { address: account?.address, connected, hasCheckedUser, isRetry });
+      console.log("Fetching current user...", { address: account?.address?.toString(), connected, hasCheckedUser, isRetry });
       const res = await fetch('/api/users');
       const data = await res.json();
-      
+      console.log("Users data received:", data);
       if (data.success) {
         const user = data.users.find((u: any) => u.walletAddress.toLowerCase() === account?.address?.toString());
+        console.log("Current user found:", user);
         setCurrentUser(user);
         setHasCheckedUser(true);
         setRetryCount(0); // Reset retry count on success
@@ -54,13 +59,13 @@ export default function ReceivePage() {
       }
     }
   };
-
-  useEffect(() => {
-    if (connected && account?.address && !hasCheckedUser) {
-      console.log('useEffect triggered - fetching user (receive page)');
-      fetchCurrentUser();
-    }
-  }, [connected, account?.address, hasCheckedUser]);
+  console.log("user details: ", currentUser);
+  // useEffect(() => {
+  //   if (connected && account?.address && !hasCheckedUser) {
+  //     console.log('useEffect triggered - fetching user (receive page)');
+  //     fetchCurrentUser();
+  //   }
+  // }, [connected, account?.address, hasCheckedUser]);
 
   // Reset hasCheckedUser when address changes (wallet switch)
   useEffect(() => {
@@ -136,13 +141,23 @@ export default function ReceivePage() {
 
   return (
     <div className="flex h-[calc(100vh-80px)] overflow-hidden">
-  
-<GetQR 
-  username={currentUser ? currentUser.name : ''}
-  walletAddress={account?.address.toString()} 
-  size={200}
-  showDetails={true}
-/>
+      {/* Sidebar with tab switching */}
+      {/* <ReceiveSidebar activeTab={activeTab} onTabChange={setActiveTab} /> */}
+
+
+  <GetQR
+    username={currentUser ? currentUser.username : "guest"}
+    walletAddress={account?.address?.toString() || "0x1234...abcd"}
+    size={200}
+    showDetails={true}
+  />
+      {/* User Registration Modal */}
+      <UserRegistrationModal
+        isOpen={showRegistrationModal}
+        onClose={() => setShowRegistrationModal(false)}
+        onComplete={handleRegistrationComplete}
+        walletAddress={account?.address.toString()}
+      />
     </div>
   );
 }
