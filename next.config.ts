@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   /* any other config options here */
+  // Add these for better performance
+  images: {
+    domains: [], // Add any image domains you use
+  },
+  // Enable SWC minification
+  swcMinify: true,
 };
 
 export default nextConfig;

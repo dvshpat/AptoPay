@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { User } from "@/types/models";
 import RecipientSelector from "./RecipientSelector";
@@ -23,22 +24,58 @@ export default function MakePaymentForm({
   const [isLoading, setIsLoading] = useState(false);
   const { account } = useWallet();
 
-  // -------------------
-
+  // QR Scanner States
   const [scannedData, setScannedData] = useState<{
     username: string;
     walletAddress: string;
   } | null>(null);
-
   const [showScanner, setShowScanner] = useState(false);
 
+  // After QR Scan
   const handleQRScanned = (data: { username: string; walletAddress: string }) => {
-    console.log("📌 Scanned Data:", data); // <-- Console log
-    setScannedData(data); // Display on screen
-    setShowScanner(false); // Close scanner after success
+    console.log("📌 Scanned Data:", data);
+    setScannedData(data);
+    setShowScanner(false);
+
+    const scannedUser: Partial<User> = {
+      walletAddress: data.walletAddress,
+      name: data.username.replace("@", ""),
+    };
+    setSelectedRecipient(scannedUser as User);
   };
 
-  // -------------------
+  // Fetch actual user from DB when scanning
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!scannedData) return;
+
+      try {
+        const res = await fetch("/api/users");
+        const data = await res.json();
+
+        if (data.success) {
+          const usernameWithoutAt = scannedData.username.replace("@", "");
+          const foundUser =
+            data.users.find((u: User) => u.name.toLowerCase() === usernameWithoutAt.toLowerCase()) ||
+            data.users.find((u: User) => u.walletAddress.toLowerCase() === scannedData.walletAddress.toLowerCase());
+
+          setSelectedRecipient(
+            foundUser || ({
+              walletAddress: scannedData.walletAddress,
+              name: usernameWithoutAt,
+            } as User)
+          );
+        }
+      } catch {
+        setSelectedRecipient({
+          walletAddress: scannedData.walletAddress,
+          name: scannedData.username.replace("@", ""),
+        } as User);
+      }
+    };
+
+    fetchUser();
+  }, [scannedData]);
 
   const handleMakePayment = () => {
     if (!selectedRecipient || !amount) return;
@@ -53,19 +90,12 @@ export default function MakePaymentForm({
       await onPaymentComplete(selectedRecipient, amount);
       setSelectedRecipient(null);
       setAmount("");
+      setScannedData(null);
       setShowPaymentModal(false);
-    } catch (error) {
-      console.error("Payment failed:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (preselectedRecipient) {
-      setSelectedRecipient(preselectedRecipient);
-    }
-  }, [preselectedRecipient]);
 
   return (
     <>
@@ -85,6 +115,18 @@ export default function MakePaymentForm({
 
             <AmountInput amount={amount} onAmountChange={setAmount} />
 
+            {/* QR Button */}
+            <div className="flex justify-center">
+              {!showScanner && (
+                <button
+                  onClick={() => setShowScanner(true)}
+                  className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition"
+                >
+                  📷 Scan QR Code
+                </button>
+              )}
+            </div>
+
             <button
               onClick={handleMakePayment}
               disabled={!selectedRecipient || !amount}
@@ -95,36 +137,18 @@ export default function MakePaymentForm({
           </div>
         </div>
       </div>
-      
-{!showScanner && (
-        <button
-          onClick={() => setShowScanner(true)}
-          className="px-6 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition"
-        >
-          Scan QR Code
-        </button>
-      )}
 
-      {/* Show QR Scanner */}
+      {/* QR Scanner Modal */}
       {showScanner && (
-        <ScanQR
-          onQRScanned={handleQRScanned}
-          onCancel={() => setShowScanner(false)}
-        />
-      )}
-
-      {/* Show Scanned Data */}
-      {scannedData && (
-        <div className="mt-6 p-4 bg-white shadow rounded-xl w-full max-w-md text-center">
-          <h3 className="text-xl font-bold text-emerald-900">Scanned Data</h3>
-          <p className="mt-2 text-gray-700">
-            <span className="font-semibold">Username:</span> {scannedData.username}
-          </p>
-          <p className="text-gray-700">
-            <span className="font-semibold">Wallet Address:</span> {scannedData.walletAddress}
-          </p>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <ScanQR
+            onQRScanned={handleQRScanned}
+            onCancel={() => setShowScanner(false)}
+          />
         </div>
       )}
+
+      {/* Payment Modal */}
       {showPaymentModal && selectedRecipient && (
         <PaymentModal
           isOpen={showPaymentModal}
