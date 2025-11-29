@@ -1,128 +1,71 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectMongoose } from "@/lib/mongodb";
-import Payment from "@/Models/PaymentModel";
+import { NextResponse } from "next/server";
+import { connectMongoose } from "../../../lib/mongodb";
+import Payment from "../../../Models/Payment";
 
-// POST - Create a new payment record
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
     await connectMongoose();
-    
-    const body = await request.json();
-    const { 
-      senderAddress, 
-      senderName,
-      receiverAddress, 
-      receiverName, 
-      amount, 
-      amountInEth, 
-      expirationTimestamp,
-      transactionHash
-    } = body;
+    const body = await req.json();
 
-    // Validate required fields
-    if (!senderAddress || !senderName || !receiverAddress || !receiverName || !amount || !amountInEth || !expirationTimestamp || !transactionHash) {
-      return NextResponse.json(
-        { success: false, error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    // Create payment record
-    const payment = new Payment({
-      senderAddress: senderAddress.toLowerCase(),
-      senderName,
-      receiverAddress: receiverAddress.toLowerCase(),
-      receiverName,
-      amount,
-      amountInEth,
-      expirationTimestamp,
-      status: 'pending',
-      transactionHash,
+    const payment = await Payment.create({
+      senderAddress: body.senderAddress.toLowerCase(),
+      senderName: body.senderName,
+      receiverAddress: body.receiverAddress.toLowerCase(),
+      receiverName: body.receiverName,
+      amount: body.amount,
+      amountInEth: body.amountInEth,
+      transactionHash: body.transactionHash,
+      status: body.status,
     });
 
-    await payment.save();
-
-    return NextResponse.json({
-      success: true,
-      payment: {
-        id: payment._id,
-        senderAddress: payment.senderAddress,
-        senderName: payment.senderName,
-        receiverAddress: payment.receiverAddress,
-        receiverName: payment.receiverName,
-        amount: payment.amount,
-        amountInEth: payment.amountInEth,
-        expirationTimestamp: payment.expirationTimestamp,
-        status: payment.status,
-        transactionHash: payment.transactionHash,
-        createdAt: payment.createdAt
-      }
-    });
-
-  } catch (error) {
-    console.error("Error creating payment record:", error);
+    return NextResponse.json({ success: true, payment }, { status: 201 });
+  } catch (err) {
+    console.error("POST /api/payments error:", err);
     return NextResponse.json(
-      { success: false, error: "Failed to create payment record" },
+      { success: false, error: "Failed to save payment" },
       { status: 500 }
     );
   }
 }
 
-// GET - Fetch payment records for a user
-export async function GET(request: NextRequest) {
+export async function GET(req: Request) {
   try {
     await connectMongoose();
-    
-    const { searchParams } = new URL(request.url);
-    const userAddress = searchParams.get('address');
-    const status = searchParams.get('status');
 
-    if (!userAddress) {
-      return NextResponse.json(
-        { success: false, error: "User address is required" },
-        { status: 400 }
-      );
-    }
+    const { searchParams } = new URL(req.url);
+    const address = searchParams.get("address");
 
-    // Build query
-    const query: any = {
+    if (!address)
+      return NextResponse.json({ success: true, payments: [] });
+
+    const normalizedAddress = address.toLowerCase();
+
+    const payments = await Payment.find({
       $or: [
-        { senderAddress: userAddress.toLowerCase() },
-        { receiverAddress: userAddress.toLowerCase() }
-      ]
-    };
+        { senderAddress: normalizedAddress },
+        { receiverAddress: normalizedAddress },
+      ],
+    }).sort({ createdAt: -1 });
 
-    if (status) {
-      query.status = status;
-    }
-
-    // Fetch payments sorted by creation date (newest first)
-    const payments = await Payment.find(query)
-      .sort({ createdAt: -1 })
-      .limit(50);
+    // Ensure amountInEth exists
+    const cleaned = payments.map((p) => {
+      const obj = p.toObject();
+      return {
+        ...obj,
+        amountInEth:
+          obj.amountInEth ??
+          (Number(obj.amount) / 1e8).toString(), // fallback conversion
+      };
+    });
 
     return NextResponse.json({
       success: true,
-      payments: payments.map(payment => ({
-        id: payment._id,
-        senderAddress: payment.senderAddress,
-        senderName: payment.senderName,
-        receiverAddress: payment.receiverAddress,
-        receiverName: payment.receiverName,
-        amount: payment.amount,
-        amountInEth: payment.amountInEth,
-        expirationTimestamp: payment.expirationTimestamp,
-        status: payment.status,
-        transactionHash: payment.transactionHash,
-        createdAt: payment.createdAt,
-        updatedAt: payment.updatedAt
-      }))
+      payments: cleaned,
     });
-
-  } catch (error) {
-    console.error("Error fetching payment records:", error);
+  } catch (err) {
+    console.error("GET /api/payments error:", err);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch payment records" },
+      { success: false, error: "Fetch error" },
       { status: 500 }
     );
   }

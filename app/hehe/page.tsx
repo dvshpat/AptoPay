@@ -1,17 +1,25 @@
 'use client'
+
 import { useState } from 'react';
 import PayPage from '@/components/paySection/PayUsers';
 import ReceivePage from '@/components/recieveSection/ReceiveUser';
 import PaymentHistory from '@/components/paymentHistory/PaymentHistory';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<'pay' | 'receive' | 'history'>('pay');
 
+  // ✅ Get current wallet address here
+  const { account } = useWallet();
+  const userAddress = account?.address?.toString() || "";
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex">
+
       {/* Sidebar */}
       <div className="w-80 bg-white/80 backdrop-blur-sm border-r border-emerald-200 shadow-lg">
         <div className="p-6">
+
           {/* Logo */}
           <div className="flex items-center space-x-3 mb-8">
             <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
@@ -26,6 +34,8 @@ export default function Page() {
 
           {/* Navigation Tabs */}
           <div className="space-y-2">
+
+            {/* PAY TAB */}
             <button
               onClick={() => setActiveTab('pay')}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
@@ -39,7 +49,8 @@ export default function Page() {
               </svg>
               <span className="font-medium">Pay</span>
             </button>
-            
+
+            {/* RECEIVE TAB */}
             <button
               onClick={() => setActiveTab('receive')}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
@@ -54,7 +65,7 @@ export default function Page() {
               <span className="font-medium">Receive</span>
             </button>
 
-            {/* Payment History Tab */}
+            {/* HISTORY TAB */}
             <button
               onClick={() => setActiveTab('history')}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
@@ -68,28 +79,37 @@ export default function Page() {
               </svg>
               <span className="font-medium">History</span>
             </button>
+
           </div>
 
-          {/* Additional Info */}
+          {/* Footer Info */}
           <div className="mt-8 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
             <p className="text-sm text-emerald-700 text-center">
-              {activeTab === 'pay' 
-                ? 'Send payments using QR codes or usernames' 
+              {activeTab === 'pay'
+                ? 'Send payments to anyone instantly'
                 : activeTab === 'receive'
-                ? 'Receive payments and manage incoming requests'
-                : 'View your complete payment history and transactions'
-              }
+                ? 'Receive payments instantly'
+                : 'Your complete on-chain & off-chain transaction log'}
             </p>
           </div>
+
         </div>
       </div>
 
-      {/* Main Content */}
+
+      {/* MAIN CONTENT AREA */}
       <div className="flex-1 p-6">
+
         {activeTab === 'pay' && <PayPage />}
+
         {activeTab === 'receive' && <ReceivePage />}
-        {activeTab === 'history' && <PaymentHistory />}
+
+        {activeTab === 'history' && (
+          <PaymentHistory userAddress={userAddress} />
+        )}
+
       </div>
+
     </div>
   );
 }
