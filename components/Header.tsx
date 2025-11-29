@@ -142,7 +142,7 @@ export default function Header() {
             </div>
           )}
 
-          {pathname === "/pay" || pathname === "/receive" ? (
+          {pathname === "/pay" || pathname === "/receive" || pathname === "/hehe" ? (
             <>
               {connected && currentUser && (
                 <>

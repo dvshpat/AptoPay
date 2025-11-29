@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const { account, connected, connect, isLoading, disconnect } = useWallet();
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const router = useRouter();
 
   const fetchCurrentUser = async () => {
     if (!account?.address || !connected) return;
@@ -29,8 +31,9 @@ export default function Home() {
   useEffect(() => {
     if (connected && account?.address) {
       fetchCurrentUser();
+      router.push('/hehe'); // Add this line - navigate to /hehe when connected
     }
-  }, [connected, account?.address]);
+  }, [connected, account?.address, router]); // Add router to dependency array
 
   const handleConnectWallet = () => {
     connect("Petra");
