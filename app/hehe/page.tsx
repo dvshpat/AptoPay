@@ -1,113 +1,134 @@
-'use client'
+"use client";
 
-import { useState } from 'react';
-import PayPage from '@/components/paySection/PayUsers';
-import ReceivePage from '@/components/recieveSection/ReceiveUser';
-import PaymentHistory from '@/components/paymentHistory/PaymentHistory';
-import { useWallet } from '@aptos-labs/wallet-adapter-react';
+import { useState } from "react";
+import PayPage from "@/components/paySection/PayUsers";
+import ReceivePage from "@/components/recieveSection/ReceiveUser";
+import PaymentHistory from "@/components/paymentHistory/PaymentHistory";
+
+import RequestPaymentForm from "@/components/RequestPaymentForm";
+import IncomingRequestsList from "@/components/IncomingRequestsList";
+
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export default function Page() {
-  const [activeTab, setActiveTab] = useState<'pay' | 'receive' | 'history'>('pay');
+  const [activeTab, setActiveTab] = useState<"pay" | "receive" | "request" | "history">("pay");
+  const [requestSubTab, setRequestSubTab] = useState<"requestMoney" | "incoming">("requestMoney");
 
-  // ✅ Get current wallet address here
   const { account } = useWallet();
   const userAddress = account?.address?.toString() || "";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex">
 
-      {/* Sidebar */}
+      {/* SIDEBAR */}
       <div className="w-80 bg-white/80 backdrop-blur-sm border-r border-emerald-200 shadow-lg">
         <div className="p-6">
 
-          {/* Logo */}
+          {/* LOGO */}
           <div className="flex items-center space-x-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
-          <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
-            <img src="../logo.png" alt="Logo" className="w-full h-full object-cover" />
-          </div>
+            <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
+              <img src="../logo.png" alt="Logo" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-xl font-bold text-emerald-900">GreenPay</h1>
           </div>
 
-          {/* Navigation Tabs */}
+          {/* NAVIGATION */}
           <div className="space-y-2">
 
-            {/* PAY TAB */}
             <button
-              onClick={() => setActiveTab('pay')}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                activeTab === 'pay'
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
-                  : 'text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900'
+              onClick={() => setActiveTab("pay")}
+              className={`w-full px-4 py-3 rounded-xl text-left font-medium transition ${
+                activeTab === "pay"
+                  ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
+                  : "text-emerald-700 hover:bg-emerald-50"
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              <span className="font-medium">Pay</span>
+              Pay
             </button>
 
-            {/* RECEIVE TAB */}
             <button
-              onClick={() => setActiveTab('receive')}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                activeTab === 'receive'
-                  ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg'
-                  : 'text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900'
+              onClick={() => setActiveTab("receive")}
+              className={`w-full px-4 py-3 rounded-xl text-left font-medium transition ${
+                activeTab === "receive"
+                  ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg"
+                  : "text-emerald-700 hover:bg-emerald-50"
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-              </svg>
-              <span className="font-medium">Receive</span>
+              Receive
             </button>
 
-            {/* HISTORY TAB */}
             <button
-              onClick={() => setActiveTab('history')}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                activeTab === 'history'
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
-                  : 'text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900'
+              onClick={() => setActiveTab("request")}
+              className={`w-full px-4 py-3 rounded-xl text-left font-medium transition ${
+                activeTab === "request"
+                  ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
+                  : "text-emerald-700 hover:bg-emerald-50"
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-              <span className="font-medium">History</span>
+              Request
+            </button>
+
+            <button
+              onClick={() => setActiveTab("history")}
+              className={`w-full px-4 py-3 rounded-xl text-left font-medium transition ${
+                activeTab === "history"
+                  ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg"
+                  : "text-emerald-700 hover:bg-emerald-50"
+              }`}
+            >
+              History
             </button>
 
           </div>
-
-          {/* Footer Info */}
-          <div className="mt-8 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-            <p className="text-sm text-emerald-700 text-center">
-              {activeTab === 'pay'
-                ? 'Send payments to anyone instantly'
-                : activeTab === 'receive'
-                ? 'Receive payments instantly'
-                : 'Your complete on-chain & off-chain transaction log'}
-            </p>
-          </div>
-
         </div>
       </div>
 
-
-      {/* MAIN CONTENT AREA */}
+      {/* MAIN CONTENT */}
       <div className="flex-1 p-6">
 
-        {activeTab === 'pay' && <PayPage />}
+        {activeTab === "pay" && <PayPage />}
+        {activeTab === "receive" && <ReceivePage />}
 
-        {activeTab === 'receive' && <ReceivePage />}
+        {/* REQUEST SECTION */}
+        {activeTab === "request" && (
+          <div className="space-y-6">
 
-        {activeTab === 'history' && (
-          <PaymentHistory userAddress={userAddress} />
+            {/* SUB TABS */}
+            <div className="flex space-x-4 border-b pb-2 border-emerald-300">
+              <button
+                onClick={() => setRequestSubTab("requestMoney")}
+                className={`px-4 py-2 rounded-lg font-semibold ${
+                  requestSubTab === "requestMoney"
+                    ? "bg-emerald-600 text-white"
+                    : "text-emerald-700 hover:bg-emerald-100"
+                }`}
+              >
+                Request Money
+              </button>
+
+              <button
+                onClick={() => setRequestSubTab("incoming")}
+                className={`px-4 py-2 rounded-lg font-semibold ${
+                  requestSubTab === "incoming"
+                    ? "bg-emerald-600 text-white"
+                    : "text-emerald-700 hover:bg-emerald-100"
+                }`}
+              >
+                Incoming Requests
+              </button>
+            </div>
+
+            {/* SUB TAB CONTENT */}
+            {requestSubTab === "requestMoney" && (
+              <RequestPaymentForm currentUser={{ walletAddress: userAddress }} />
+            )}
+
+            {requestSubTab === "incoming" && <IncomingRequestsList />}
+          </div>
         )}
 
+        {activeTab === "history" && <PaymentHistory userAddress={userAddress} />}
       </div>
-
     </div>
   );
 }
