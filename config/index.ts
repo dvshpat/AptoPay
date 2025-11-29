@@ -6,7 +6,7 @@ if (!projectId) {
 
 const CONFIG = {
     MODULE_ADDRESS:
-      "0x561e3de8c948305003be617b7ce5f5280aa36798ea256a8fab13fe21c2e040f4",
+      "0xf655c6a050b44ce83e1bca5ad7207b9c50ee847f69cfc5cfdfb4f7d409b1463a",
     NODE_URL: "https://fullnode.testnet.aptoslabs.com",
   };
 
