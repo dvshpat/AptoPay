@@ -58,20 +58,7 @@ export default function Page() {
         className="w-80 bg-white/90 backdrop-blur-xl border-r border-emerald-200/50 shadow-2xl"
       >
         <div className="p-8">
-          {/* LOGO */}
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-            className="flex items-center space-x-3 mb-12"
-          >
-            <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <img src="../logo.png" alt="Logo" className="w-8 h-8 filter brightness-0 invert" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-              GreenPay
-            </h1>
-          </motion.div>
+          
 
           {/* NAVIGATION */}
           <div className="space-y-3">
