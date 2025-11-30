@@ -3,7 +3,7 @@
 export default function FeaturesSection() {
   return (
     <div className="text-center mb-16">
-      <h2 className="text-3xl font-bold text-gray-800 mb-12">Why Choose SecurePay?</h2>
+      <h2 className="text-3xl font-bold text-gray-800 mb-12">Why Choose AptoPay?</h2>
       <div className="grid md:grid-cols-3 gap-8">
         <FeatureCard 
           title="Username Payments" 
