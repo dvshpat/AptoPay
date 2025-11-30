@@ -120,7 +120,7 @@ export default function PayPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                 senderAddress: account.address.toString(),
+                  senderAddress: account.address.toString(),
                   senderName: currentUser?.name || "Unknown",
                   receiverAddress: recipient.walletAddress,
                   receiverName: recipient.name,
@@ -152,6 +152,7 @@ export default function PayPage() {
               });
 
               toast.error("Payment failed!");
+              throw error; // Re-throw to stop MakePaymentForm from sending reward
             }
           }}
         />

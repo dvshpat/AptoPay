@@ -9,6 +9,13 @@ export interface IUser extends Document {
   photonUserId?: string;
   photonAccessToken?: string;
   photonRefreshToken?: string;
+
+  // Rewards history
+  rewards?: {
+    eventType: string;
+    timestamp: Date;
+    reward: any;
+  }[];
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -19,6 +26,15 @@ const UserSchema: Schema<IUser> = new Schema({
   photonUserId: { type: String },
   photonAccessToken: { type: String },
   photonRefreshToken: { type: String },
+
+  // Rewards
+  rewards: [
+    {
+      eventType: { type: String },
+      timestamp: { type: Date, default: Date.now },
+      reward: { type: Schema.Types.Mixed },
+    },
+  ],
 
   createdAt: { type: Date, default: Date.now },
 });

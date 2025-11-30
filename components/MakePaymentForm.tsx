@@ -100,7 +100,7 @@ export default function MakePaymentForm({
         body: JSON.stringify({
           walletAddress: account?.address?.toString(),
           eventType: "PAYMENT_COMPLETED",
-          campaignId: "PAYMENT_REWARD_CAMPAIGN", // <-- replace with your Photon campaign ID
+          campaignId: "ea3bcaca-9ce4-4b54-b803-8b9be1f142ba", // Updated from Postman collection
           metadata: {
             amount,
             to: selectedRecipient.walletAddress,
