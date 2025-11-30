@@ -27,7 +27,6 @@ A modern, user-friendly cryptocurrency payment platform built on the Aptos block
 
 ### Prerequisites
 - Node.js 18+ 
-- MongoDB database
 - Aptos-compatible wallet (Petra recommended)
 
 ### Installation
@@ -46,8 +45,6 @@ A modern, user-friendly cryptocurrency payment platform built on the Aptos block
 3. **Environment Configuration**
    Create a `.env.local` file:
    ```env
-   MONGODB_URI=your_mongodb_connection_string
-   MONGODB_DB=Aptopay
    APTOS_API_KEY_MAINNET=your_aptos_api_key
    PHOTON_API_KEY=your_photon_rewards_api_key
    PHOTON_JWT_SECRET=your_jwt_secret
@@ -61,36 +58,7 @@ A modern, user-friendly cryptocurrency payment platform built on the Aptos block
 5. **Open your browser**
    Navigate to `http://localhost:3000`
 
-## 🏗️ Project Structure
 
-```
-Aptopay/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   │   ├── payments/      # Payment management
-│   │   ├── requests/      # Payment requests
-│   │   ├── rewards/       # Rewards system
-│   │   └── users/         # User management
-│   ├── hehe/              # Main dashboard
-│   ├── pay/               # Send payments
-│   ├── receive/           # Receive payments
-│   └── register/          # User registration
-├── components/            # React components
-│   ├── paySection/        # Payment sending UI
-│   ├── recieveSection/    # Payment receiving UI
-│   ├── requestAPT/        # Payment requests
-│   ├── paymentHistory/    # Transaction history
-│   └── Rewards/           # Rewards display
-├── Models/                # MongoDB models
-│   ├── Payment.ts         # Payment records
-│   ├── PaymentModel.ts    # Enhanced payment model
-│   ├── Request.ts         # Payment requests
-│   └── UserModel.ts       # User accounts
-├── lib/                   # Utilities
-│   ├── aptos.ts          # Aptos blockchain interaction
-│   └── mongodb.ts        # Database connection
-└── types/                 # TypeScript definitions
-```
 
 ## 💻 Core Components
 
@@ -112,73 +80,6 @@ Aptopay/
 - Automatic user registration with Photon
 - Event tracking for payment activities
 - Custom reward calculation (100 points per 1 APT)
-
-## 🔧 API Endpoints
-
-### Payments
-- `POST /api/payments` - Create new payment
-- `GET /api/payments?address=...` - Get user payments
-- `PUT /api/payments/update-status` - Update payment status
-
-### Requests
-- `POST /api/requests` - Create payment request
-- `GET /api/requests?address=...&role=...` - Get user requests
-- `POST /api/requests/[id]/accept` - Accept request
-- `POST /api/requests/[id]/reject` - Reject request
-- `POST /api/requests/[id]/cancel` - Cancel request
-
-### Users
-- `GET /api/users` - Get all users
-- `POST /api/users/register` - Register new user
-
-### Rewards
-- `POST /api/rewards` - Record reward event
-- `GET /api/rewards?walletAddress=...` - Get user rewards
-
-## 🗄️ Database Models
-
-### User Model
-```typescript
-{
-  walletAddress: string;
-  name: string;
-  photonUserId?: string;
-  photonAccessToken?: string;
-  photonRefreshToken?: string;
-  rewards: RewardHistory[];
-  createdAt: Date;
-}
-```
-
-### Payment Model
-```typescript
-{
-  senderAddress: string;
-  senderName: string;
-  receiverAddress: string;
-  receiverName: string;
-  amount: string; // in wei
-  amountInEth: string; // display amount
-  expirationTimestamp: number;
-  status: 'pending' | 'completed' | 'failed' | 'expired';
-  transactionHash?: string;
-}
-```
-
-### Request Model
-```typescript
-{
-  requestId: string;
-  requesterAddress: string;
-  requesterName?: string;
-  payerAddress?: string;
-  amount: string;
-  amountInHuman?: string;
-  memo?: string;
-  status: 'pending' | 'paid' | 'cancelled' | 'rejected';
-  txHash?: string;
-}
-```
 
 ## 🔐 Security Features
 
@@ -216,26 +117,6 @@ npm start
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Check the [Issues](../../issues) page
-- Create a new issue with detailed description
-- Contact the development team
-
-## 🔮 Roadmap
-
-- [ ] Multi-chain support
-- [ ] Advanced reward tiers
-- [ ] Payment scheduling
-- [ ] Bulk payments
-- [ ] Merchant integration
-- [ ] Mobile app development
 
 ---
 
