@@ -9,9 +9,9 @@ It enables **instant crypto payments** using **QR codes and usernames**, along w
 
 ## 🎥 Project Demo
 
-> ⬇️ Upload your demo video via a GitHub Issue and paste the generated `.mp4` link below
 
-VIDEO_URL_HERE
+
+https://github.com/user-attachments/assets/b1984c08-0177-49d5-87aa-11e4af4a81da
 
 ---
 
