@@ -1,50 +1,112 @@
-# AptoPay - Instant Crypto Payments with QR & Rewards
+# 🚀 AptoPay — Instant Crypto Payments with QR & Rewards
 
-A modern, user-friendly cryptocurrency payment platform built on the Aptos blockchain that enables instant payments using QR codes and usernames with built-in reward systems.
+AptoPay is a Web3-based cryptocurrency payment platform built on the **Aptos blockchain** during a Web3 hackathon.  
+It enables **instant crypto payments** using **QR codes and usernames**, along with a built-in **reward system** to incentivize user engagement.
 
-- 🚀 **Deployment:** [aptopay.shubhh.xyz](https://aptopay.shubhh.xyz/)
-
-
-![apto Logo](./public/home.png)
+- 🚀 **Live Deployment:** https://aptopay.shubhh.xyz/
 
 ---
 
-![apto Logo](./public/qrscan.png)
+## 🎥 Project Demo
+
+> ⬇️ Upload your demo video via a GitHub Issue and paste the generated `.mp4` link below
+
+VIDEO_URL_HERE
 
 ---
 
-![apto Logo](./public/hehe.png)
+![AptoPay Home](./public/home.png)
 
+---
+
+![QR Scan](./public/qrscan.png)
+
+---
+
+![Rewards](./public/hehe.png)
+
+---
 
 ## 🌟 Features
 
-### Core Functionality
-- **QR Code Payments**: Scan or share QR codes for instant, contactless payments
-- **Username-Based Payments**: Send crypto using simple usernames instead of complex wallet addresses
-- **Payment Rewards**: Earn exciting rewards and cashback on every transaction
-- **Instant Payments**: Send and receive crypto in seconds with QR technology
-- **Secure & Robust**: Military-grade security with reversible payment options
-- **Request System**: Create and manage payment requests from other users
+### 🔑 Core Functionality
+- **QR Code Payments** – Scan or share QR codes for fast, contactless crypto payments
+- **Username-Based Payments** – Send crypto using simple usernames instead of wallet addresses
+- **Payment Requests** – Create, send, accept, or reject payment requests
+- **Rewards System** – Earn reward points on successful transactions
+- **Instant Transactions** – Payments executed on-chain via Aptos
+- **Wallet Integration** – Seamless connection with Aptos-compatible wallets (Petra recommended)
 
-### User Experience
-- **Beautiful UI**: Modern, responsive design with smooth animations
-- **Wallet Integration**: Seamless Aptos wallet connection
-- **Transaction History**: Complete payment tracking and history
-- **Real-time Updates**: Live updates for incoming requests and payments
-- **Multi-tab Interface**: Organized sections for Pay, Receive, Request, History, and Rewards
+---
 
-## 🚀 Quick Start
+### 🎨 User Experience
+- Modern, responsive UI built with **Next.js**
+- Smooth animations using **Framer Motion**
+- QR code generation & scanning
+- Toast notifications and real-time feedback
+- Organized tab-based interface (Pay, Receive, Request, History, Rewards)
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- **Next.js (App Router)**
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS**
+- **Framer Motion**
+
+### Blockchain & Web3
+- **Aptos Blockchain**
+- **Move Smart Contracts**
+- **@aptos-labs/ts-sdk**
+- **Aptos Wallet Adapter**
+
+### Backend & Utilities
+- **MongoDB & Mongoose**
+- **JWT Authentication**
+- **QR Code generation & scanning**
+
+### Tooling & Deployment
+- ESLint, PostCSS
+- Vercel Deployment
+
+---
+
+## 📂 Project Structure
+
+```bash
+AptoPay/
+│── app/                # Next.js routes and pages
+│── components/         # Reusable UI components
+│── context/            # Wallet & global state management
+│── lib/                # Utility functions
+│── config/             # App & contract configuration
+│── contract/           # Aptos Move smart contracts
+│── Models/             # Database models
+│── types/              # TypeScript type definitions
+│── public/             # Static assets
+│
+│── package.json
+│── tsconfig.json
+│── next.config.ts
+│── vercel.json
+│── README.md
+```
+
+##🚀 Quick Start
 
 ### Prerequisites
 - Node.js 18+ 
 - Aptos-compatible wallet (Petra recommended)
 
-### Installation
+Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd Aptopay
+   git clone https://github.com/dvshpat/AptoPay.git
+   cd AptoPay
    ```
 
 2. **Install dependencies**
@@ -128,5 +190,10 @@ npm start
 5. Open a Pull Request
 
 ---
+
+
+📜 License
+This project is open-source and available under the MIT License.
+
 
 Built with ❤️ using Next.js and Aptos
